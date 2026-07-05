@@ -78,6 +78,7 @@ export default function DashboardPage() {
     if (status === 'authenticated') {
       fetchData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   async function fetchData() {
