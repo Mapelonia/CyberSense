@@ -185,7 +185,7 @@ export default function HomePage() {
             <span className="font-semibold">CyberSense</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2024 CyberSense. Built to strengthen human defenses against cyber
+            © 2026 CyberSense. Built to strengthen human defenses against cyber
             threats.
           </p>
         </div>
