@@ -28,6 +28,7 @@ interface LevelInfo {
   level: number
   xp: number
   xpToNext: number
+  progress: number
 }
 
 interface Stats {
@@ -121,9 +122,7 @@ export default function DashboardPage() {
   if (!session) return null
 
   const userName = session.user?.name ?? 'Agent'
-  const xpProgress = levelInfo
-    ? Math.round((levelInfo.xp / levelInfo.xpToNext) * 100)
-    : 0
+  const xpProgress = levelInfo?.progress ?? 0
 
   const typeIcons: Record<string, React.ReactNode> = {
     phishing: <Mail className="h-4 w-4" />,

@@ -55,7 +55,7 @@ export function calculateXP(params: {
     : 0; // Up to 30% bonus for flags
   const speedBonus = params.timeSpentMs < 60000 ? 0.1 : 0; // 10% bonus for under 1 minute
 
-  const totalMultiplier = difficultyMultiplier + streakBonus + flagBonus + speedBonus;
+  const totalMultiplier = difficultyMultiplier * (1 + streakBonus + flagBonus + speedBonus);
   return Math.round(baseXP * totalMultiplier);
 }
 

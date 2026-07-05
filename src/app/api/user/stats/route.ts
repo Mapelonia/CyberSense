@@ -44,19 +44,19 @@ export async function GET() {
         ? Math.round((userStats.correctDecisions / userStats.totalDecisions) * 100)
         : 0;
 
-    // Get earned badge IDs
+    // Get earned badges by joining through badge table to get badge names
     const earnedUserBadges = await prisma.userBadge.findMany({
       where: { userId },
-      select: { badgeId: true },
+      include: { badge: { select: { name: true } } },
     });
-    const earnedBadgeIds = new Set(earnedUserBadges.map((b) => b.badgeId));
+    const earnedBadgeNames = new Set(earnedUserBadges.map((b) => b.badge.name));
 
     // Map all badges with earned status
     const allBadges = BADGES.map((b) => ({
       id: b.id,
       emoji: b.icon,
       name: b.name,
-      earned: earnedBadgeIds.has(b.id),
+      earned: earnedBadgeNames.has(b.name),
     }));
 
     return NextResponse.json({
@@ -70,6 +70,7 @@ export async function GET() {
         level: levelInfo.level,
         xp: userStats.totalXp,
         xpToNext: levelInfo.nextLevelXp,
+        progress: Math.round(levelInfo.progress),
       },
       earnedBadges: allBadges,
     });

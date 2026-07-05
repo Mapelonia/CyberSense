@@ -123,6 +123,7 @@ export async function POST() {
     }
 
     // Create UserBadge records for newly earned badges
+    let cumulativeXp = stats.totalXp;
     for (const badge of newlyEarnedBadges) {
       // Find or create the Badge record in the database
       let dbBadge = await prisma.badge.findUnique({
@@ -142,18 +143,20 @@ export async function POST() {
         });
       }
 
-      await prisma.userBadge.create({
-        data: {
-          userId,
-          badgeId: dbBadge.id,
-        },
+      // Use upsert to avoid race condition on concurrent badge creation
+      await prisma.userBadge.upsert({
+        where: { userId_badgeId: { userId, badgeId: dbBadge.id } },
+        create: { userId, badgeId: dbBadge.id },
+        update: {},
       });
 
-      // Award bonus XP for earning the badge
+      // Award bonus XP for earning the badge and update level
+      cumulativeXp += badge.xpReward;
       await prisma.userStats.update({
         where: { userId },
         data: {
-          totalXp: { increment: badge.xpReward },
+          totalXp: cumulativeXp,
+          level: getLevelForXP(cumulativeXp).level,
         },
       });
     }

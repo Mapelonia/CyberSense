@@ -5,14 +5,16 @@ import prisma from "@/lib/prisma";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, password } = body;
+    const { name, email: rawEmail, password } = body;
 
-    if (!email || !password || !name) {
+    if (!rawEmail || !password || !name) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
         { status: 400 }
       );
     }
+
+    const email = rawEmail.trim().toLowerCase();
 
     if (password.length < 8) {
       return NextResponse.json(

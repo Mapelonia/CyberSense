@@ -12,27 +12,25 @@ interface DialogueOption {
   id: string
   text: string
   score: 'comply' | 'partial' | 'resist'
-  leads_to: string
+  leads_to: number
 }
 
 interface DialogueStep {
-  id: string
-  message: string
+  step: number
+  attacker_message?: string | null
   options?: DialogueOption[]
   outcome?: 'resisted' | 'manipulated'
+  feedback?: string
 }
 
 interface Scenario {
   id: string
-  title: string
+  type: string
   context: string
   difficulty: number
-  tacticsUsed: string[]
-  red_flags?: { id: string; tactic: string; description: string }[]
-  dialogue: {
-    steps: Record<string, DialogueStep>
-    start: string
-  }
+  manipulation_tactics: string[]
+  red_flags: { id: string; tactic: string; description: string; step?: number }[]
+  dialogue: DialogueStep[]
 }
 
 interface ChatMessage {
@@ -56,7 +54,7 @@ export default function PretextingSimulationPage() {
   const [scenario, setScenario] = useState<Scenario | null>(null)
   const [loading, setLoading] = useState(true)
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [currentStepId, setCurrentStepId] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState<DialogueStep | null>(null)
   const [currentOptions, setCurrentOptions] = useState<DialogueOption[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [outcome, setOutcome] = useState<'resisted' | 'manipulated' | null>(null)
@@ -80,11 +78,14 @@ export default function PretextingSimulationPage() {
       setLoading(true)
       const res = await fetch('/api/scenarios/generate?type=pretexting')
       const data = await res.json()
-      setScenario(data)
-      // Start the dialogue
-      const startStepId = data.dialogue.start
-      setCurrentStepId(startStepId)
-      presentStep(data, startStepId)
+      const scenarioData = data.scenario
+      setScenario(scenarioData)
+      // Start the dialogue - find the first step (step 1)
+      const firstStep = scenarioData.dialogue.find((s: DialogueStep) => s.step === 1)
+      if (firstStep) {
+        setCurrentStep(firstStep)
+        presentStep(scenarioData, firstStep)
+      }
     } catch (error) {
       console.error('Failed to fetch scenario:', error)
     } finally {
@@ -92,8 +93,7 @@ export default function PretextingSimulationPage() {
     }
   }
 
-  function presentStep(scenarioData: Scenario, stepId: string) {
-    const step = scenarioData.dialogue.steps[stepId]
+  function presentStep(scenarioData: Scenario, step: DialogueStep) {
     if (!step) return
 
     // Show typing indicator then attacker message
@@ -102,10 +102,13 @@ export default function PretextingSimulationPage() {
 
     setTimeout(() => {
       setIsTyping(false)
-      setMessages((prev) => [
-        ...prev,
-        { id: `attacker-${stepId}`, type: 'attacker', text: step.message },
-      ])
+
+      if (step.attacker_message) {
+        setMessages((prev) => [
+          ...prev,
+          { id: `attacker-${step.step}`, type: 'attacker', text: step.attacker_message! },
+        ])
+      }
 
       if (step.outcome) {
         // End state reached
@@ -127,9 +130,11 @@ export default function PretextingSimulationPage() {
 
     // Follow leads_to
     if (scenario) {
-      const nextStepId = option.leads_to
-      setCurrentStepId(nextStepId)
-      presentStep(scenario, nextStepId)
+      const nextStep = scenario.dialogue.find((s) => s.step === option.leads_to)
+      if (nextStep) {
+        setCurrentStep(nextStep)
+        presentStep(scenario, nextStep)
+      }
     }
   }
 
@@ -145,8 +150,8 @@ export default function PretextingSimulationPage() {
         isCorrect: finalOutcome === 'resisted',
         flagsCaught: [],
         flagsMissed: scenarioData.red_flags ? scenarioData.red_flags.map((f) => f.id) : [],
-        tacticsUsed: scenarioData.tacticsUsed,
-        tacticsMissed: finalOutcome === 'manipulated' ? scenarioData.tacticsUsed : [],
+        tacticsUsed: scenarioData.manipulation_tactics,
+        tacticsMissed: finalOutcome === 'manipulated' ? scenarioData.manipulation_tactics : [],
         actualFlags: scenarioData.red_flags || [],
         timeSpentMs,
       }
@@ -157,12 +162,36 @@ export default function PretextingSimulationPage() {
         body: JSON.stringify(payload),
       })
       const data = await res.json()
-      setFeedbackData(data)
+      setFeedbackData(data.feedback ?? data)
       setShowFeedback(true)
     } catch (error) {
       console.error('Failed to submit results:', error)
-      // Still show feedback even if submission fails
-      setShowFeedback(true)
+      // Generate client-side fallback feedback so user isn't stuck
+      import('@/lib/feedback-engine').then(({ generateFeedback }) => {
+        const fallback = generateFeedback({
+          isCorrect: finalOutcome === 'resisted',
+          userFlagIds: [],
+          actualFlags: scenarioData.red_flags || [],
+          scenarioType: 'pretexting',
+          difficulty: scenarioData.difficulty,
+        })
+        setFeedbackData(fallback)
+        setShowFeedback(true)
+      }).catch(() => {
+        // If even the import fails, set minimal feedback to unstick the UI
+        setFeedbackData({
+          score: finalOutcome === 'resisted' ? 100 : 0,
+          isCorrect: finalOutcome === 'resisted',
+          summary: finalOutcome === 'resisted'
+            ? 'You resisted the social engineering attempt!'
+            : 'You were manipulated. Review the red flags below.',
+          items: (scenarioData.red_flags || []).map((f: any) => ({ flag: f, caught: false })),
+          tacticsBreakdown: [],
+          personalizedTips: [],
+          encouragement: 'Keep practicing to improve your detection skills!',
+        })
+        setShowFeedback(true)
+      })
     } finally {
       setSubmitting(false)
     }
@@ -349,7 +378,7 @@ export default function PretextingSimulationPage() {
         {showFeedback && feedbackData && scenario && (
           <div className="mt-4 pb-6">
             <FeedbackPanel
-              feedback={feedbackData.feedback ?? feedbackData}
+              feedback={feedbackData}
               scenario={scenario as any}
               scenarioType="pretexting"
               onNext={() => {

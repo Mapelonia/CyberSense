@@ -141,7 +141,21 @@ export function generateScenario(type: ScenarioType, difficulty?: number): Scena
     }
   }
 
-  const template = pickRandom(filtered);
+  // For vishing, ensure equal probability between transcript and interactive modes
+  let template: any;
+  if (type === "vishing") {
+    const transcriptTemplates = filtered.filter((t: any) => t.mode === "transcript");
+    const interactiveTemplates = filtered.filter((t: any) => t.mode === "interactive");
+    // 50/50 chance of each mode, then random within that mode
+    if (transcriptTemplates.length > 0 && interactiveTemplates.length > 0) {
+      const modePool = Math.random() < 0.5 ? transcriptTemplates : interactiveTemplates;
+      template = pickRandom(modePool);
+    } else {
+      template = pickRandom(filtered);
+    }
+  } else {
+    template = pickRandom(filtered);
+  }
   const variables = template.variables || {};
 
   // Resolve all variable values for this generation

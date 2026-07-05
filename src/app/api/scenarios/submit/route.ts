@@ -54,10 +54,10 @@ export async function POST(request: Request) {
     const newCorrectDecisions = stats.correctDecisions + (isCorrect ? 1 : 0);
     const newTotalDecisions = stats.totalDecisions + 1;
 
-    // Update tactic miss rates
-    const updateMissRate = (current: number, missed: boolean, total: number) => {
-      if (total === 0) return current;
-      return current + ((missed ? 1 : 0) - current) / total;
+    // Update tactic miss rates using exponential moving average
+    const updateMissRate = (current: number, missed: boolean) => {
+      const alpha = 0.2; // Each encounter contributes 20% to the running average
+      return current + alpha * ((missed ? 1 : 0) - current);
     };
 
     const missRateUpdates: Record<string, number> = {};
@@ -69,8 +69,7 @@ export async function POST(request: Request) {
       if (wasUsed) {
         missRateUpdates[fieldName] = updateMissRate(
           (stats as any)[fieldName] || 0,
-          wasMissed,
-          newTotalDecisions
+          wasMissed
         );
       }
     });
