@@ -72,6 +72,7 @@ export default function PhishingSimulationPage() {
           flagsMissed: scenario.red_flags.filter((f) => !selectedFlags.includes(f.id)).map((f) => f.id),
           tacticsUsed: scenario.manipulation_tactics,
           tacticsMissed: scenario.red_flags.filter((f) => !selectedFlags.includes(f.id)).map((f) => f.tactic),
+          actualFlags: scenario.red_flags,
           timeSpentMs,
         }),
       });

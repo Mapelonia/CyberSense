@@ -28,6 +28,7 @@ interface Scenario {
   context: string
   difficulty: number
   tacticsUsed: string[]
+  red_flags?: { id: string; tactic: string; description: string }[]
   dialogue: {
     steps: Record<string, DialogueStep>
     start: string
@@ -143,9 +144,10 @@ export default function PretextingSimulationPage() {
         decision: finalOutcome,
         isCorrect: finalOutcome === 'resisted',
         flagsCaught: [],
-        flagsMissed: [],
+        flagsMissed: scenarioData.red_flags ? scenarioData.red_flags.map((f) => f.id) : [],
         tacticsUsed: scenarioData.tacticsUsed,
-        tacticsMissed: [],
+        tacticsMissed: finalOutcome === 'manipulated' ? scenarioData.tacticsUsed : [],
+        actualFlags: scenarioData.red_flags || [],
         timeSpentMs,
       }
 

@@ -116,6 +116,7 @@ export default function VishingSimulationPage() {
           flagsMissed: scenario.red_flags.slice(caughtCount).map((f) => f.id),
           tacticsUsed: scenario.manipulation_tactics,
           tacticsMissed: isCorrect ? [] : scenario.manipulation_tactics,
+          actualFlags: scenario.red_flags,
           timeSpentMs,
         }),
       });

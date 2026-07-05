@@ -26,6 +26,7 @@ export async function POST(request: Request) {
       tacticsUsed,
       tacticsMissed,
       timeSpentMs,
+      actualFlags,
     } = body;
 
     // Get user stats
@@ -115,14 +116,19 @@ export async function POST(request: Request) {
     });
 
     // Generate feedback
+    // Use full red flag data from client if provided, otherwise fall back to IDs-only
+    const resolvedFlags: RedFlag[] = actualFlags && actualFlags.length > 0
+      ? actualFlags
+      : (flagsCaught.concat(flagsMissed)).map((id: string) => ({
+          id,
+          tactic: tacticsUsed[0] || "trust",
+          description: `Suspicious element identified`,
+        }));
+
     const feedback = generateFeedback({
       isCorrect,
       userFlagIds: flagsCaught,
-      actualFlags: (flagsCaught.concat(flagsMissed)).map((id: string) => ({
-        id,
-        tactic: tacticsUsed[0] || "trust",
-        description: "",
-      })),
+      actualFlags: resolvedFlags,
       scenarioType,
       difficulty,
       userMissRates: {
