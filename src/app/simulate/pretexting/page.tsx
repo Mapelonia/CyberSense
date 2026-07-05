@@ -348,7 +348,7 @@ export default function PretextingSimulationPage() {
           <div className="mt-4 pb-6">
             <FeedbackPanel
               feedback={feedbackData.feedback ?? feedbackData}
-              scenario={scenario}
+              scenario={scenario as any}
               scenarioType="pretexting"
               onNext={() => {
                 setShowFeedback(false)
