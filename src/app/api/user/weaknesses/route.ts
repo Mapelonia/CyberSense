@@ -4,6 +4,26 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { getWeakestTactics, getTacticTips } from "@/lib/gamification";
 
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diffMs = now.getTime() - new Date(date).getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffMinutes < 1) return "just now";
+  if (diffMinutes < 60) return `${diffMinutes}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays === 1) return "yesterday";
+  return `${diffDays}d ago`;
+}
+
+function mapDifficulty(difficulty: number): "Easy" | "Medium" | "Hard" {
+  if (difficulty <= 2) return "Easy";
+  if (difficulty <= 3) return "Medium";
+  return "Hard";
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -17,21 +37,7 @@ export async function GET() {
 
     if (!stats) {
       return NextResponse.json({
-        missRates: {
-          urgency: 0,
-          authority: 0,
-          fear: 0,
-          curiosity: 0,
-          reward: 0,
-          trust: 0,
-        },
         weakestTactics: [],
-        tips: {},
-        accuracy: {
-          phishing: 0,
-          pretexting: 0,
-          vishing: 0,
-        },
         recentResults: [],
       });
     }
@@ -45,37 +51,39 @@ export async function GET() {
       trust: stats.trustMissRate,
     };
 
-    const weakestTactics = getWeakestTactics(missRates);
+    // Get weakest tactics as string array, then map to dashboard format
+    const weakTacticNames = getWeakestTactics(missRates);
 
-    const tips: Record<string, string> = {};
-    for (const tactic of weakestTactics) {
-      tips[tactic] = getTacticTips(tactic);
-    }
+    const weakestTactics = weakTacticNames.map((tactic) => ({
+      name: tactic.charAt(0).toUpperCase() + tactic.slice(1),
+      missRate: Math.round((missRates[tactic as keyof typeof missRates] || 0) * 100),
+      tip: getTacticTips(tactic),
+    }));
 
-    const accuracy = {
-      phishing: stats.phishingAccuracy,
-      pretexting: stats.pretextingAccuracy,
-      vishing: stats.vishingAccuracy,
-    };
-
-    const recentResults = await prisma.sessionResult.findMany({
+    // Get recent results in the format the dashboard expects
+    const rawResults = await prisma.sessionResult.findMany({
       where: { userId },
       orderBy: { completedAt: "desc" },
       take: 10,
       select: {
-        userId: true,
+        id: true,
         scenarioType: true,
         isCorrect: true,
-        tacticsMissed: true,
+        difficulty: true,
         completedAt: true,
       },
     });
 
+    const recentResults = rawResults.map((r) => ({
+      id: r.id,
+      type: r.scenarioType as "phishing" | "pretexting" | "vishing",
+      correct: r.isCorrect,
+      timeAgo: formatTimeAgo(r.completedAt),
+      difficulty: mapDifficulty(r.difficulty),
+    }));
+
     return NextResponse.json({
-      missRates,
       weakestTactics,
-      tips,
-      accuracy,
       recentResults,
     });
   } catch (error) {
