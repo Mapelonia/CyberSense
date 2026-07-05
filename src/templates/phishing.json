@@ -1,0 +1,221 @@
+[
+  {
+    "id": "phish-001",
+    "type": "phishing",
+    "difficulty": 1,
+    "manipulation_tactics": ["urgency", "fear"],
+    "variables": {
+      "sender_name": ["Security Team", "Account Protection", "Safety Alert"],
+      "company": ["PayPal", "Netflix", "Amazon", "Apple"],
+      "deadline": ["24 hours", "12 hours", "immediately", "within 1 hour"],
+      "victim_name": ["Valued Customer", "Account Holder", "Dear User"]
+    },
+    "subject": "⚠️ Your {{company}} account has been compromised",
+    "sender_email": "security@{{company_domain}}.account-verify.com",
+    "body": "Dear {{victim_name}},\n\nWe have detected suspicious activity on your {{company}} account. Your account will be suspended in {{deadline}} unless you verify your identity.\n\nClick the link below to secure your account:\n\n[Verify My Account](http://{{company_domain}}-secure.fake-domain.com/verify)\n\nIf you did not make any changes, please verify immediately to avoid permanent account suspension.\n\nRegards,\n{{sender_name}}\n{{company}} Security Division",
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "location": "sender_email",
+        "tactic": "trust",
+        "description": "The sender email uses a suspicious domain (account-verify.com) instead of the official company domain"
+      },
+      {
+        "id": "rf-2",
+        "location": "subject",
+        "tactic": "fear",
+        "description": "The subject line uses alarming language to create panic and bypass rational thinking"
+      },
+      {
+        "id": "rf-3",
+        "location": "body_deadline",
+        "tactic": "urgency",
+        "description": "A tight deadline creates pressure to act without verifying the email's legitimacy"
+      },
+      {
+        "id": "rf-4",
+        "location": "body_link",
+        "tactic": "trust",
+        "description": "The link URL contains the company name but goes to an unrelated fake domain"
+      }
+    ],
+    "is_malicious": true
+  },
+  {
+    "id": "phish-002",
+    "type": "phishing",
+    "difficulty": 2,
+    "manipulation_tactics": ["authority", "urgency"],
+    "variables": {
+      "sender_name": ["HR Department", "Human Resources", "People Operations"],
+      "company": ["Your Company", "Corporate Office", "Head Office"],
+      "action": ["review your benefits package", "confirm your tax documents", "update your direct deposit information"],
+      "deadline": ["end of day today", "before 5 PM", "within the next 2 hours"]
+    },
+    "subject": "ACTION REQUIRED: Employee Benefits Update - {{deadline}}",
+    "sender_email": "hr-department@{{random_domain}}.com",
+    "body": "Hi Team,\n\nAs part of our annual review, all employees must {{action}} by {{deadline}}.\n\nPlease click the link below to access the employee portal:\n\n[Access Employee Portal](http://employee-portal-update.suspicious-site.com/login)\n\nFailure to complete this by the deadline may result in a disruption to your benefits coverage.\n\nThis is a mandatory requirement from management.\n\nBest regards,\n{{sender_name}}\n{{company}}",
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "location": "sender_email",
+        "tactic": "trust",
+        "description": "The sender email uses a generic domain instead of your company's actual email domain"
+      },
+      {
+        "id": "rf-2",
+        "location": "subject",
+        "tactic": "urgency",
+        "description": "ACTION REQUIRED with a tight deadline pressures you to act quickly"
+      },
+      {
+        "id": "rf-3",
+        "location": "body_link",
+        "tactic": "trust",
+        "description": "The link goes to 'suspicious-site.com' — not your company's actual employee portal"
+      },
+      {
+        "id": "rf-4",
+        "location": "body_authority",
+        "tactic": "authority",
+        "description": "References 'management' and 'mandatory requirement' to make you comply without questioning"
+      },
+      {
+        "id": "rf-5",
+        "location": "body_consequence",
+        "tactic": "fear",
+        "description": "Threatens disruption to benefits — a fear tactic to prevent you from thinking critically"
+      }
+    ],
+    "is_malicious": true
+  },
+  {
+    "id": "phish-003",
+    "type": "phishing",
+    "difficulty": 3,
+    "manipulation_tactics": ["curiosity", "reward"],
+    "variables": {
+      "sender_name": ["Rewards Team", "Gift Card Department", "Special Offers"],
+      "company": ["Amazon", "Starbucks", "Target", "Walmart"],
+      "amount": ["$500", "$250", "$100", "$1,000"],
+      "reason": ["loyalty program", "customer appreciation event", "random selection winner", "feedback survey completion"]
+    },
+    "subject": "Congratulations! You've received a {{amount}} {{company}} Gift Card 🎁",
+    "sender_email": "rewards@{{company_lower}}-giftcards-official.com",
+    "body": "Hello!\n\nGreat news! As part of our {{reason}}, you have been selected to receive a {{amount}} {{company}} Gift Card!\n\nTo claim your reward, simply verify your shipping address and payment details:\n\n[Claim Your Gift Card Now](http://claim-{{company_lower}}-reward.phish-domain.net/claim)\n\nThis offer expires in 48 hours. Don't miss out!\n\nNo purchase necessary. Limited availability.\n\nBest,\n{{sender_name}}\n{{company}} Rewards Program",
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "location": "subject",
+        "tactic": "reward",
+        "description": "Unsolicited gift card offers are a classic phishing lure — legitimate companies don't randomly email gift cards"
+      },
+      {
+        "id": "rf-2",
+        "location": "sender_email",
+        "tactic": "trust",
+        "description": "The email domain 'giftcards-official.com' is not the real company domain"
+      },
+      {
+        "id": "rf-3",
+        "location": "body_link",
+        "tactic": "trust",
+        "description": "The claim link goes to 'phish-domain.net' — clearly not the real company"
+      },
+      {
+        "id": "rf-4",
+        "location": "body_payment",
+        "tactic": "curiosity",
+        "description": "Asking for 'payment details' to receive a free gift card is a major red flag"
+      },
+      {
+        "id": "rf-5",
+        "location": "body_urgency",
+        "tactic": "urgency",
+        "description": "'Expires in 48 hours' creates artificial time pressure"
+      }
+    ],
+    "is_malicious": true
+  },
+  {
+    "id": "phish-004",
+    "type": "phishing",
+    "difficulty": 2,
+    "manipulation_tactics": [],
+    "variables": {
+      "sender_name": ["Shipping Updates", "Delivery Notification", "FedEx Team"],
+      "company": ["FedEx", "UPS", "USPS"],
+      "tracking_number": ["1Z999AA10123456784", "9400111899223100012", "7489234112398"],
+      "delivery_date": ["tomorrow", "today", "Monday"]
+    },
+    "subject": "Your package is scheduled for delivery {{delivery_date}}",
+    "sender_email": "notifications@fedex.com",
+    "body": "Hello,\n\nYour package (tracking #{{tracking_number}}) is scheduled for delivery {{delivery_date}}.\n\nYou can track your package status at:\nhttps://www.fedex.com/tracking?id={{tracking_number}}\n\nIf you need to change delivery options, please visit fedex.com/delivery-manager.\n\nThank you for choosing FedEx.\n\nFedEx Delivery Notifications\n\nThis is an automated message. Please do not reply directly to this email.",
+    "red_flags": [],
+    "is_malicious": false
+  },
+  {
+    "id": "phish-005",
+    "type": "phishing",
+    "difficulty": 4,
+    "manipulation_tactics": ["authority", "trust", "urgency"],
+    "variables": {
+      "sender_name": ["IT Security", "Information Security Team", "Cybersecurity Division"],
+      "company": ["Microsoft", "Google Workspace", "Office 365"],
+      "issue": ["unusual sign-in activity", "failed login attempts from a new location", "password expiration"],
+      "location": ["Moscow, Russia", "Lagos, Nigeria", "Unknown VPN"]
+    },
+    "subject": "Security Alert: {{issue}} detected on your account",
+    "sender_email": "no-reply@microsft-security.com",
+    "body": "Dear User,\n\nOur security systems have detected {{issue}} on your {{company}} account.\n\nDetails:\n- Location: {{location}}\n- Time: Today at 3:42 AM\n- Status: Account temporarily restricted\n\nIf this wasn't you, please secure your account immediately by resetting your password through our secure portal:\n\n[Reset Password Now](https://microsft-security.com/reset-password)\n\nIf you recognize this activity, you can dismiss this alert.\n\nThis is an automated security notification.\n\n{{sender_name}}\nMicrosoft Account Protection",
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "location": "sender_email",
+        "tactic": "trust",
+        "description": "The domain is 'microsft-security.com' — note the typo (missing 'o' in Microsoft). A subtle but critical red flag."
+      },
+      {
+        "id": "rf-2",
+        "location": "body_link",
+        "tactic": "trust",
+        "description": "The reset link goes to the same typosquatted domain 'microsft-security.com' — not microsoft.com"
+      },
+      {
+        "id": "rf-3",
+        "location": "body_location",
+        "tactic": "fear",
+        "description": "Mentioning a scary foreign location triggers fear and urgency to act"
+      },
+      {
+        "id": "rf-4",
+        "location": "body_restricted",
+        "tactic": "urgency",
+        "description": "'Account temporarily restricted' creates urgency — you feel you must act NOW"
+      },
+      {
+        "id": "rf-5",
+        "location": "body_authority",
+        "tactic": "authority",
+        "description": "Impersonates Microsoft's official security team to appear legitimate"
+      }
+    ],
+    "is_malicious": true
+  },
+  {
+    "id": "phish-006",
+    "type": "phishing",
+    "difficulty": 3,
+    "manipulation_tactics": [],
+    "variables": {
+      "sender_name": ["GitHub"],
+      "repo_name": ["react", "next.js", "typescript"],
+      "user": ["dependabot", "github-actions"]
+    },
+    "subject": "{{user}} opened a pull request in {{repo_name}}",
+    "sender_email": "notifications@github.com",
+    "body": "{{user}} opened a pull request in your repository {{repo_name}}:\n\n#1234 - Update dependencies to fix security vulnerabilities\n\nView it on GitHub:\nhttps://github.com/your-username/{{repo_name}}/pull/1234\n\n---\nYou are receiving this because you are subscribed to this repository.\nManage your notification settings: https://github.com/settings/notifications\nUnsubscribe: https://github.com/notifications/unsubscribe",
+    "red_flags": [],
+    "is_malicious": false
+  }
+]

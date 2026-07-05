@@ -1,0 +1,591 @@
+[
+  {
+    "id": "vish-001",
+    "type": "vishing",
+    "mode": "transcript",
+    "difficulty": 1,
+    "manipulation_tactics": ["authority", "fear", "urgency"],
+    "variables": {
+      "caller_name": ["Officer Davis", "Agent Thompson", "Inspector Clark"],
+      "agency": ["IRS", "Social Security Administration", "Federal Tax Bureau"],
+      "amount": ["$3,200", "$5,800", "$7,400"],
+      "case_number": ["SSA-2024-7712", "IRS-AUDIT-3391", "FTB-CASE-8820"]
+    },
+    "caller_id": "{{agency}} Official Line",
+    "caller_number": "+1 (202) 555-0147",
+    "duration": "4:32",
+    "transcript": [
+      {
+        "speaker": "caller",
+        "timestamp": "0:00",
+        "text": "This is {{caller_name}} from the {{agency}}, badge number 4471. I'm calling regarding case number {{case_number}}. This is an urgent matter regarding your social security number.",
+        "has_tactic": true,
+        "tactic": "authority",
+        "explanation": "Provides fake badge number and case number to sound official and legitimate"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:15",
+        "text": "What's this about?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:18",
+        "text": "Ma'am/Sir, your social security number has been linked to suspicious activities including money laundering and drug trafficking. A warrant has been issued for your arrest.",
+        "has_tactic": true,
+        "tactic": "fear",
+        "explanation": "Accusing you of serious crimes triggers panic and makes you desperate to resolve the situation"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:32",
+        "text": "What? I haven't done anything wrong!"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:35",
+        "text": "I understand. That's why I'm calling — to give you a chance to resolve this BEFORE the police arrive at your location. We can clear this up today if you cooperate. You'll need to pay the outstanding fine of {{amount}} immediately.",
+        "has_tactic": true,
+        "tactic": "urgency",
+        "explanation": "'Before the police arrive' creates extreme urgency to comply without thinking"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:52",
+        "text": "How would I pay that?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:55",
+        "text": "For security purposes and to protect your identity during this investigation, we need payment via gift cards — Google Play or iTunes. Go to your nearest store, purchase the cards, and read me the codes. This is standard federal procedure for identity protection cases.",
+        "has_tactic": true,
+        "tactic": "trust",
+        "explanation": "No government agency accepts gift cards. Calling it 'standard federal procedure' is a lie to make an absurd request seem normal"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "1:15",
+        "text": "Gift cards? That doesn't sound right..."
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "1:18",
+        "text": "I understand your hesitation, but this is a time-sensitive federal matter. If you do not comply within the next 30 minutes, I will have no choice but to dispatch officers to your current location. Do you want to be arrested in front of your family and neighbors?",
+        "has_tactic": true,
+        "tactic": "fear",
+        "explanation": "Escalating the threat with personal embarrassment (family, neighbors) to override your instinct that something is wrong"
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "tactic": "authority",
+        "timestamp": "0:00",
+        "description": "Real government agencies send official letters — they don't cold-call with threats"
+      },
+      {
+        "id": "rf-2",
+        "tactic": "fear",
+        "timestamp": "0:18",
+        "description": "Extreme accusations (money laundering, drug trafficking) are designed to trigger panic"
+      },
+      {
+        "id": "rf-3",
+        "tactic": "urgency",
+        "timestamp": "0:35",
+        "description": "Threatening police arrival creates false urgency to prevent verification"
+      },
+      {
+        "id": "rf-4",
+        "tactic": "trust",
+        "timestamp": "0:55",
+        "description": "Gift card payment is a universal scam indicator — no legitimate organization uses this"
+      },
+      {
+        "id": "rf-5",
+        "tactic": "fear",
+        "timestamp": "1:18",
+        "description": "Threatening embarrassment in front of family is emotional manipulation"
+      }
+    ]
+  },
+  {
+    "id": "vish-002",
+    "type": "vishing",
+    "mode": "interactive",
+    "difficulty": 2,
+    "manipulation_tactics": ["trust", "urgency", "authority"],
+    "variables": {
+      "caller_name": ["Michael", "Jennifer", "Robert"],
+      "bank": ["Chase", "Bank of America", "Wells Fargo", "Citibank"],
+      "amount": ["$847.99", "$1,200.00", "$599.95"],
+      "location": ["overseas", "in Nigeria", "in Romania"]
+    },
+    "caller_id": "{{bank}} Fraud Department",
+    "caller_number": "+1 (800) 555-0123",
+    "context": "Your phone rings with a call appearing to be from your bank's fraud department.",
+    "dialogue": [
+      {
+        "step": 1,
+        "caller_message": "Hello, this is {{caller_name}} from the {{bank}} fraud prevention team. We've detected an unauthorized transaction of {{amount}} on your account from {{location}}. For your security, we need to verify your identity to block this charge. Can you confirm your account number?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Oh no! Yes, my account number is...",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "I'll call the number on the back of my card to verify this.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "If you're from my bank, you should already have my account number.",
+            "score": "resist",
+            "leads_to": 3
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "caller_message": "Thank you. Now for the two-factor verification, I need you to read me the 6-digit code we just sent to your phone. This will allow us to block the fraudulent transaction and secure your account.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Sure, the code is 847291.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "Wait — if you're blocking a transaction, why do you need MY verification code?",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "caller_message": "For security reasons, we can't read your full account number back to you — that would be a security risk on an open phone line. This is standard bank security protocol. We just need the last 4 digits and your PIN to verify your identity. Time is critical — the transaction is still pending.",
+        "options": [
+          {
+            "id": "a",
+            "text": "That makes sense. The last 4 digits are... and my PIN is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "My bank would never ask for my PIN over the phone. I'm hanging up and calling the bank directly.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "I'll give you the last 4 digits but not my PIN.",
+            "score": "partial",
+            "leads_to": 4
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "caller_message": "I understand your caution, but without your PIN we cannot verify your identity and the fraudulent charge of {{amount}} will go through. You'll lose that money. We're trying to help you here. Just the PIN and we can block it immediately.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Fine, I don't want to lose that money. My PIN is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "No. I'm going to hang up and call the bank number on my card.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "caller_message": null,
+        "outcome": "resisted",
+        "feedback": "Excellent! You avoided a vishing attack. Real bank fraud departments will never ask for your full account number, PIN, or verification codes over the phone. If you get a suspicious call, hang up and call the number on the back of your card."
+      },
+      {
+        "step": 6,
+        "caller_message": null,
+        "outcome": "manipulated",
+        "feedback": "You gave away credentials to a scammer impersonating your bank. They likely triggered the verification code themselves (trying to log into your account) and used your real-time code to gain access. Always hang up and call your bank directly using the number on your card."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "trust",
+        "description": "Caller ID can be spoofed — a call appearing from your bank doesn't mean it's really them"
+      },
+      {
+        "id": "rf-2",
+        "step": 1,
+        "tactic": "urgency",
+        "description": "Creating urgency around a 'fraudulent charge' makes you panic and skip verification"
+      },
+      {
+        "id": "rf-3",
+        "step": 2,
+        "tactic": "authority",
+        "description": "Banks never ask you to read back verification codes — those codes are for YOUR actions, not theirs"
+      },
+      {
+        "id": "rf-4",
+        "step": 3,
+        "tactic": "trust",
+        "description": "Banks will NEVER ask for your PIN over the phone under any circumstances"
+      }
+    ]
+  },
+  {
+    "id": "vish-003",
+    "type": "vishing",
+    "mode": "transcript",
+    "difficulty": 3,
+    "manipulation_tactics": ["authority", "trust", "curiosity"],
+    "variables": {
+      "caller_name": ["Sarah", "David", "Amy"],
+      "company": ["Microsoft", "Apple", "Norton", "McAfee"],
+      "issue": ["malware infection", "expired security license", "compromised firewall"]
+    },
+    "caller_id": "{{company}} Technical Support",
+    "caller_number": "+1 (425) 555-0198",
+    "duration": "6:15",
+    "transcript": [
+      {
+        "speaker": "caller",
+        "timestamp": "0:00",
+        "text": "Good afternoon, this is {{caller_name}} calling from {{company}} Technical Support. Our system has flagged your computer with a {{issue}}. We've been trying to reach you — this is quite serious.",
+        "has_tactic": true,
+        "tactic": "authority",
+        "explanation": "Impersonating a major tech company's support team to establish credibility"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:12",
+        "text": "Really? I didn't notice anything wrong."
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:15",
+        "text": "That's the dangerous part — this type of threat operates silently. Hackers could be accessing your personal files, banking information, and photos right now without you knowing. Let me help you check. Can you open your Event Viewer?",
+        "has_tactic": true,
+        "tactic": "fear",
+        "explanation": "Creating fear about invisible hackers to motivate immediate action"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:30",
+        "text": "How do I do that?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:33",
+        "text": "Press Windows key + R, type 'eventvwr' and press enter. Now look at the warnings and errors listed there. See all those red and yellow entries? Each one is a sign of malicious activity on your system.",
+        "has_tactic": true,
+        "tactic": "trust",
+        "explanation": "Event Viewer ALWAYS shows warnings and errors on every Windows PC — they're normal system logs, not malware indicators"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "1:05",
+        "text": "Oh wow, there are a lot of them. Is that bad?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "1:08",
+        "text": "Yes, very concerning. But don't worry, I can help fix this remotely. I need you to download our secure support tool from support-{{company_lower}}-fix.com and give me the access code it generates. This will let me remove the malware safely.",
+        "has_tactic": true,
+        "tactic": "authority",
+        "explanation": "Directing you to download remote access software gives the scammer full control of your computer"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "1:28",
+        "text": "Is there a fee for this?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "1:31",
+        "text": "The diagnostic was free, but the malware removal requires our premium protection plan — it's normally $499 but because this is an emergency, we can offer it for $199 today only. I can process that once I'm connected to your machine. Shall we proceed?",
+        "has_tactic": true,
+        "tactic": "reward",
+        "explanation": "Fake discount creates perceived value and urgency — the 'service' is worthless and the real goal is remote access"
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "tactic": "authority",
+        "timestamp": "0:00",
+        "description": "Microsoft/Apple/Norton do NOT proactively call users about infections"
+      },
+      {
+        "id": "rf-2",
+        "tactic": "fear",
+        "timestamp": "0:15",
+        "description": "Claims of silent hackers accessing everything are designed to create panic"
+      },
+      {
+        "id": "rf-3",
+        "tactic": "trust",
+        "timestamp": "0:33",
+        "description": "Event Viewer errors are normal on all Windows PCs — this is a manipulation of technical ignorance"
+      },
+      {
+        "id": "rf-4",
+        "tactic": "authority",
+        "timestamp": "1:08",
+        "description": "Being asked to download remote access software from a non-official domain is a critical red flag"
+      },
+      {
+        "id": "rf-5",
+        "tactic": "reward",
+        "timestamp": "1:31",
+        "description": "Charging for a fake service after manufacturing a fake problem"
+      }
+    ]
+  },
+  {
+    "id": "vish-004",
+    "type": "vishing",
+    "mode": "interactive",
+    "difficulty": 4,
+    "manipulation_tactics": ["authority", "trust", "urgency"],
+    "variables": {
+      "caller_name": ["Patricia", "Robert", "Steven"],
+      "hospital": ["General Hospital", "Regional Medical Center", "City Hospital"],
+      "relative": ["your mother", "your father", "your spouse"]
+    },
+    "caller_id": "{{hospital}} Emergency",
+    "caller_number": "+1 (555) 911-0234",
+    "context": "You receive an urgent call that appears to be from a hospital emergency department.",
+    "dialogue": [
+      {
+        "step": 1,
+        "caller_message": "Hello, this is {{caller_name}} from {{hospital}} emergency department. I'm calling because {{relative}} has been brought in after a car accident. They're in stable condition but need an emergency procedure. We need you to come in, but first — there's an issue with their insurance coverage for this procedure.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Oh my God! What do you need? I'll do anything!",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "Let me call my relative directly to verify this.",
+            "score": "resist",
+            "leads_to": 4
+          },
+          {
+            "id": "c",
+            "text": "What's the insurance issue? Can I call the hospital switchboard to discuss?",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "caller_message": "The emergency procedure costs $4,500 and their insurance won't cover it without pre-authorization which takes 48 hours. We can proceed immediately if you provide a credit card for the deposit. I know this is stressful, but every minute counts for the procedure.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Here's my credit card — just save them!",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "Hospitals don't refuse emergency procedures for payment. Let me verify this.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "Can I come to the hospital first and sort payment in person?",
+            "score": "partial",
+            "leads_to": 3
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "caller_message": "By the time you arrive, it may be too late. The doctor needs to begin in the next 15 minutes. Please, just provide the card over the phone and we'll have the paperwork ready when you arrive. Your loved one needs this NOW.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Okay okay, my card number is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "I'm calling the hospital directly and calling my relative. Do NOT proceed without my in-person authorization.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "caller_message": "I understand you want to verify, but please hurry. They're in pain and asking for you. The number here is... actually, their phone was damaged in the accident. Please just trust me — I'm a nurse trying to help your family.",
+        "options": [
+          {
+            "id": "a",
+            "text": "You're right, I shouldn't waste time. What do you need?",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "I'll call the hospital's main number to verify. If this is real, they'll know about it.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "caller_message": null,
+        "outcome": "resisted",
+        "feedback": "You resisted a terrifying but common vishing scam. Attackers exploit your love for family to bypass rational thinking. Remember: hospitals NEVER refuse emergency treatment for payment, and you can always verify by calling the hospital's published number directly."
+      },
+      {
+        "step": 6,
+        "caller_message": null,
+        "outcome": "manipulated",
+        "feedback": "This was an emergency scam exploiting your emotions about a loved one. The attacker had no real connection to a hospital. Key facts: hospitals cannot legally refuse emergency care for payment reasons, and you should always independently verify emergency claims by calling published numbers."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "fear",
+        "description": "Using a loved one's safety as leverage triggers an emotional override of rational thinking"
+      },
+      {
+        "id": "rf-2",
+        "step": 2,
+        "tactic": "trust",
+        "description": "Hospitals cannot legally refuse emergency treatment based on payment — EMTALA law requires treatment"
+      },
+      {
+        "id": "rf-3",
+        "step": 3,
+        "tactic": "urgency",
+        "description": "'15 minutes or it's too late' is extreme manufactured urgency"
+      },
+      {
+        "id": "rf-4",
+        "step": 4,
+        "tactic": "trust",
+        "description": "'Phone was damaged' conveniently prevents you from verifying the story"
+      }
+    ]
+  },
+  {
+    "id": "vish-005",
+    "type": "vishing",
+    "mode": "transcript",
+    "difficulty": 2,
+    "manipulation_tactics": ["reward", "urgency", "trust"],
+    "variables": {
+      "caller_name": ["Kevin", "Amanda", "Brian"],
+      "company": ["your electric company", "your internet provider", "your phone carrier"],
+      "amount": ["$450", "$320", "$280"],
+      "program": ["government energy rebate", "customer loyalty refund", "overpayment correction"]
+    },
+    "caller_id": "{{company}} Customer Service",
+    "caller_number": "+1 (800) 555-0456",
+    "duration": "3:45",
+    "transcript": [
+      {
+        "speaker": "caller",
+        "timestamp": "0:00",
+        "text": "Hi there! This is {{caller_name}} from {{company}}. I have great news — you've been selected for a {{program}} of {{amount}}! We just need to verify your account to process the refund.",
+        "has_tactic": true,
+        "tactic": "reward",
+        "explanation": "Leading with unexpected money makes the target eager to cooperate"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:12",
+        "text": "Oh really? I wasn't expecting that."
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:15",
+        "text": "Yes! Many customers don't realize they're eligible. To deposit the {{amount}} directly into your bank account, I'll need your bank routing number and account number. It'll be deposited within 24 hours.",
+        "has_tactic": true,
+        "tactic": "trust",
+        "explanation": "Asking for banking details under the guise of 'depositing money' — the real goal is to steal from the account"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:30",
+        "text": "Can't you just credit it to my bill?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:33",
+        "text": "Unfortunately, this particular program requires a direct bank deposit — it's a government-mandated process. But I need to process this today because the program deadline is midnight tonight. After that, the funds go back to the government and you lose the rebate.",
+        "has_tactic": true,
+        "tactic": "urgency",
+        "explanation": "A fake deadline prevents you from taking time to verify the offer independently"
+      },
+      {
+        "speaker": "you",
+        "timestamp": "0:48",
+        "text": "What if I call back tomorrow?"
+      },
+      {
+        "speaker": "caller",
+        "timestamp": "0:51",
+        "text": "I'm sorry but the program closes tonight and we can't guarantee the funds will still be available. I really don't want you to miss out. If you give me your routing and account number now, I'll have the {{amount}} in your account by morning. Many of your neighbors have already received theirs!",
+        "has_tactic": true,
+        "tactic": "trust",
+        "explanation": "Social proof ('your neighbors') and repeating the reward pressure the target to act now"
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "tactic": "reward",
+        "timestamp": "0:00",
+        "description": "Unexpected money offers from companies you didn't contact are almost always scams"
+      },
+      {
+        "id": "rf-2",
+        "tactic": "trust",
+        "timestamp": "0:15",
+        "description": "Legitimate refunds go to your existing payment method — not by asking for new bank details"
+      },
+      {
+        "id": "rf-3",
+        "tactic": "urgency",
+        "timestamp": "0:33",
+        "description": "A midnight deadline prevents you from independently verifying with the company"
+      },
+      {
+        "id": "rf-4",
+        "tactic": "trust",
+        "timestamp": "0:51",
+        "description": "'Your neighbors received theirs' is unverifiable social proof to make you feel you're missing out"
+      }
+    ]
+  }
+]

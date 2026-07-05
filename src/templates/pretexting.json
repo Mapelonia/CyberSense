@@ -1,0 +1,601 @@
+[
+  {
+    "id": "pretext-001",
+    "type": "pretexting",
+    "difficulty": 2,
+    "manipulation_tactics": ["authority", "urgency"],
+    "variables": {
+      "attacker_name": ["James from IT Support", "Sarah from Tech Department", "Mike from Helpdesk"],
+      "company": ["your company", "the corporate office", "headquarters"],
+      "issue": ["a critical security patch", "a system migration", "an emergency server update"]
+    },
+    "context": "You receive a message on your work chat from someone claiming to be from IT support. They say they need your help with {{issue}}.",
+    "dialogue": [
+      {
+        "step": 1,
+        "attacker_message": "Hi! This is {{attacker_name}}. We're performing {{issue}} and need to verify your credentials to ensure your account migrates correctly. This is time-sensitive — we need to complete it in the next 15 minutes or your account will be locked out.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Sure, what do you need from me?",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "Can you verify who you are first? What's your employee ID?",
+            "score": "resist",
+            "leads_to": 3
+          },
+          {
+            "id": "c",
+            "text": "Let me call the IT helpdesk number to verify this request.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "attacker_message": "Great, thank you for being cooperative! I just need you to confirm your username and current password so I can validate the migration. We're doing this for all employees today.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Here's my info: username is jsmith, password is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "Wait — IT should never ask for passwords. Something feels off.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "Can't you just reset it on your end if needed?",
+            "score": "partial",
+            "leads_to": 4
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "attacker_message": "Of course! My employee ID is IT-2847. Look, I know this seems unusual, but we're under a tight deadline from management. If we don't get this done, the whole department loses access. Can you just confirm your password real quick?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Okay, if management approved it... my password is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "I'm going to verify this through official channels first.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "Can you send me an email from your official company address?",
+            "score": "partial",
+            "leads_to": 4
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "attacker_message": "I understand your concern, but our email system is actually down — that's part of why we're doing this migration urgently. Please, it'll only take a second. Just your password and we're done. Everyone else in your department already completed this.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Fine, if everyone else did it... my password is...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "No. I'll wait until I can verify through proper channels.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "attacker_message": null,
+        "outcome": "resisted",
+        "feedback": "Excellent! You resisted the social engineering attempt. The attacker used authority (claiming to be IT), urgency (tight deadline), and social proof (everyone else did it) to manipulate you."
+      },
+      {
+        "step": 6,
+        "attacker_message": null,
+        "outcome": "manipulated",
+        "feedback": "You were manipulated into sharing your credentials. Remember: legitimate IT staff will NEVER ask for your password. Always verify through official channels, regardless of claimed urgency."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "urgency",
+        "description": "The '15 minutes or you'll be locked out' pressure is designed to prevent you from thinking critically"
+      },
+      {
+        "id": "rf-2",
+        "step": 2,
+        "tactic": "authority",
+        "description": "Legitimate IT staff will NEVER ask for your password — they can reset it without knowing it"
+      },
+      {
+        "id": "rf-3",
+        "step": 3,
+        "tactic": "authority",
+        "description": "Providing a fake employee ID doesn't prove identity — anyone can make up a number"
+      },
+      {
+        "id": "rf-4",
+        "step": 4,
+        "tactic": "trust",
+        "description": "'Everyone else already did it' is social proof manipulation — even if true, it doesn't make the request legitimate"
+      }
+    ]
+  },
+  {
+    "id": "pretext-002",
+    "type": "pretexting",
+    "difficulty": 3,
+    "manipulation_tactics": ["trust", "curiosity", "reward"],
+    "variables": {
+      "attacker_name": ["Lisa", "David", "Rachel"],
+      "platform": ["LinkedIn", "professional network", "industry forum"],
+      "company": ["Google", "Microsoft", "Meta", "Apple"],
+      "role": ["Senior Developer", "Engineering Manager", "Tech Lead"]
+    },
+    "context": "You receive a direct message on {{platform}} from someone claiming to be a recruiter at {{company}}. Their profile looks legitimate with 500+ connections.",
+    "dialogue": [
+      {
+        "step": 1,
+        "attacker_message": "Hi! I'm {{attacker_name}}, a talent acquisition specialist at {{company}}. I came across your profile and I'm very impressed with your background. We have a {{role}} opening that pays $200K-$300K and I think you'd be a perfect fit. Would you be interested in a quick chat?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Absolutely! That sounds amazing. What do you need from me?",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "Interesting. Can you send me the official job listing on your company careers page?",
+            "score": "resist",
+            "leads_to": 3
+          },
+          {
+            "id": "c",
+            "text": "Thanks for reaching out. Can I verify your identity through {{company}}'s official channels?",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "attacker_message": "Wonderful! To fast-track your application, I'll need you to fill out this pre-screening form. It asks for basic info — full name, address, date of birth, and your current company's internal tools/systems for our background check. Here's the link: [Candidate Form](http://fake-careers-portal.com/apply)",
+        "options": [
+          {
+            "id": "a",
+            "text": "Sure, filling it out now!",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "Why would a pre-screening need my company's internal tools? That seems odd.",
+            "score": "resist",
+            "leads_to": 4
+          },
+          {
+            "id": "c",
+            "text": "I'd prefer to apply through the official careers page if possible.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "attacker_message": "This is actually an exclusive unlisted position — it's not on the public careers page yet. That's why I'm reaching out directly to top candidates. The role will be posted publicly next month, but if you apply now through my direct link, you skip the queue. Here's the application: [Apply Now](http://fake-careers-portal.com/exclusive)",
+        "options": [
+          {
+            "id": "a",
+            "text": "An exclusive opportunity? I don't want to miss out. Let me apply.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "I appreciate it, but I only apply through verified company portals.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "attacker_message": "Oh that's standard for senior roles — we need to assess what enterprise tools you're familiar with for the technical assessment. It's completely confidential. I've placed hundreds of candidates this way. We just need it for compatibility evaluation.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Okay, if it's standard procedure I'll fill it out.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "No thanks. I'll look for this role through official channels.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "attacker_message": null,
+        "outcome": "resisted",
+        "feedback": "Great job! You avoided a social engineering attack disguised as a recruiting opportunity. The attacker used reward (high salary), trust (fake LinkedIn profile), and curiosity (exclusive role) to extract personal information and company intelligence."
+      },
+      {
+        "step": 6,
+        "attacker_message": null,
+        "outcome": "manipulated",
+        "feedback": "You were manipulated by a fake recruiter. They now have your personal information and potentially your company's internal tool inventory. Always verify recruiters through official company channels and never share company-internal information with external contacts."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "reward",
+        "description": "Unsolicited offers with exceptionally high compensation are often too good to be true"
+      },
+      {
+        "id": "rf-2",
+        "step": 2,
+        "tactic": "curiosity",
+        "description": "Asking about your company's internal tools is intelligence gathering — not standard recruiting"
+      },
+      {
+        "id": "rf-3",
+        "step": 3,
+        "tactic": "reward",
+        "description": "'Skip the queue' and 'exclusive unlisted position' create artificial scarcity to pressure action"
+      },
+      {
+        "id": "rf-4",
+        "step": 2,
+        "tactic": "trust",
+        "description": "The application link goes to a non-company domain — real recruiters use official portals"
+      }
+    ]
+  },
+  {
+    "id": "pretext-003",
+    "type": "pretexting",
+    "difficulty": 1,
+    "manipulation_tactics": ["fear", "authority"],
+    "variables": {
+      "attacker_name": ["Officer Johnson", "Agent Smith", "Detective Williams"],
+      "agency": ["IRS", "FBI", "Social Security Administration", "Tax Department"],
+      "amount": ["$4,580", "$8,200", "$12,000"],
+      "case_number": ["FED-2024-8891", "IRS-CASE-442", "SSA-FRAUD-2291"]
+    },
+    "context": "You receive an unexpected message claiming to be from a government agency about a legal matter.",
+    "dialogue": [
+      {
+        "step": 1,
+        "attacker_message": "This is {{attacker_name}} from the {{agency}}. Case number {{case_number}}. We've identified a discrepancy in your records showing you owe {{amount}} in unpaid obligations. A warrant for your arrest has been issued. You must resolve this TODAY or face immediate legal action. Reply to discuss resolution options.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Oh no! What do I need to do to fix this?",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "Government agencies don't contact people this way. This is a scam.",
+            "score": "resist",
+            "leads_to": 5
+          },
+          {
+            "id": "c",
+            "text": "I'll contact the agency directly through their official website.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "attacker_message": "To avoid arrest and resolve this matter immediately, you'll need to pay the outstanding amount via gift cards or wire transfer. This is a time-sensitive federal matter. Provide your banking information or purchase ${{amount}} in Google Play gift cards and send me the codes. This call is being recorded for federal purposes.",
+        "options": [
+          {
+            "id": "a",
+            "text": "I'll go buy the gift cards right away.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "No government agency asks for gift cards. This is definitely a scam.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "attacker_message": null,
+        "outcome": "resisted",
+        "feedback": "You correctly identified this as a scam! Government agencies (IRS, FBI, SSA) will NEVER: contact you via chat/text for legal matters, threaten immediate arrest, or ask for payment via gift cards or wire transfers. They communicate through official mail."
+      },
+      {
+        "step": 6,
+        "attacker_message": null,
+        "outcome": "manipulated",
+        "feedback": "This was a classic government impersonation scam. Remember: NO legitimate government agency will ever ask for payment via gift cards or threaten immediate arrest over chat. Always verify through official channels."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "authority",
+        "description": "Impersonating a government official to intimidate and create compliance"
+      },
+      {
+        "id": "rf-2",
+        "step": 1,
+        "tactic": "fear",
+        "description": "Threatening arrest creates panic that overrides critical thinking"
+      },
+      {
+        "id": "rf-3",
+        "step": 2,
+        "tactic": "urgency",
+        "description": "Demanding immediate payment prevents you from verifying the claim"
+      },
+      {
+        "id": "rf-4",
+        "step": 2,
+        "tactic": "trust",
+        "description": "No legitimate agency accepts gift cards as payment — this is a universal scam indicator"
+      }
+    ]
+  },
+  {
+    "id": "pretext-004",
+    "type": "pretexting",
+    "difficulty": 3,
+    "manipulation_tactics": ["trust", "authority"],
+    "variables": {
+      "attacker_name": ["Mark from Accounts", "Jennifer from Finance", "Tom from Procurement"],
+      "exec_name": ["the CEO", "the CFO", "the VP of Operations"],
+      "amount": ["$15,000", "$8,500", "$22,000"],
+      "vendor": ["Acme Solutions", "TechVend Inc", "Global Services Ltd"]
+    },
+    "context": "You work in the finance department. A colleague messages you about an urgent payment that needs processing.",
+    "dialogue": [
+      {
+        "step": 1,
+        "attacker_message": "Hey, I need your help urgently. {{exec_name}} just approved an emergency vendor payment of {{amount}} to {{vendor}}. They need it processed within the hour before the contract deadline. Can you handle the wire transfer? I'll send you the account details.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Sure, send me the details and I'll process it.",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "I need to see the written approval from {{exec_name}} first.",
+            "score": "partial",
+            "leads_to": 3
+          },
+          {
+            "id": "c",
+            "text": "Let me verify this directly with {{exec_name}} before processing.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "attacker_message": "Here are the wire details:\nBank: First National\nRouting: 021000089\nAccount: 4829103847\nBeneficiary: {{vendor}}\n\nPlease process ASAP. {{exec_name}} specifically said not to delay this.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Processing now.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "This doesn't follow our normal payment approval process. I need proper authorization.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "attacker_message": "{{exec_name}} approved it verbally in a meeting — there's no time for paperwork. They're in back-to-back meetings and specifically asked me to handle this quietly. It's for a sensitive deal. Can you just push it through?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Okay, if the CEO approved it verbally...",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "Sorry, but I can't bypass procedure regardless of who approved it verbally.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "attacker_message": null,
+        "outcome": "resisted",
+        "feedback": "Well done! This was a Business Email Compromise (BEC) / internal pretexting attack. The attacker tried to bypass payment controls using authority (CEO name-drop), urgency (deadline), and trust (posing as a colleague). Always follow payment procedures regardless of claimed urgency."
+      },
+      {
+        "step": 6,
+        "attacker_message": null,
+        "outcome": "manipulated",
+        "feedback": "You fell for a Business Email Compromise attack. The attacker used a compromised/impersonated colleague account to trick you into sending money to a fraudulent account. Always verify large payment requests through official approval channels, even under time pressure."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "authority",
+        "description": "Name-dropping the CEO/CFO creates perceived authority and discourages questioning"
+      },
+      {
+        "id": "rf-2",
+        "step": 1,
+        "tactic": "urgency",
+        "description": "'Within the hour' pressures you to skip normal verification procedures"
+      },
+      {
+        "id": "rf-3",
+        "step": 3,
+        "tactic": "trust",
+        "description": "'Handle this quietly' isolates you from colleagues who might catch the fraud"
+      },
+      {
+        "id": "rf-4",
+        "step": 3,
+        "tactic": "authority",
+        "description": "Verbal-only approval with no paper trail is a major red flag for financial transactions"
+      }
+    ]
+  },
+  {
+    "id": "pretext-005",
+    "type": "pretexting",
+    "difficulty": 2,
+    "manipulation_tactics": ["trust", "curiosity"],
+    "variables": {
+      "attacker_name": ["Alex", "Jordan", "Sam"],
+      "platform": ["Facebook", "Instagram", "a dating app"],
+      "duration": ["a few weeks", "a month", "several weeks"]
+    },
+    "context": "You've been chatting with {{attacker_name}} on {{platform}} for {{duration}}. They seem friendly and share common interests. Today they send an unusual message.",
+    "dialogue": [
+      {
+        "step": 1,
+        "attacker_message": "Hey! I've really enjoyed getting to know you 😊 I just found this amazing investment platform that's given me 300% returns in 2 months. I know it sounds crazy but look at my portfolio screenshots! Want me to show you how to get started? You'd only need to put in $500 to try it.",
+        "options": [
+          {
+            "id": "a",
+            "text": "300% returns? That's incredible! Show me more!",
+            "score": "comply",
+            "leads_to": 2
+          },
+          {
+            "id": "b",
+            "text": "That sounds too good to be true. 300% returns aren't realistic.",
+            "score": "resist",
+            "leads_to": 4
+          },
+          {
+            "id": "c",
+            "text": "I'm not comfortable mixing friendships with money. Let's keep chatting about other things.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "attacker_message": "Here's the platform link: [CryptoGains Pro](http://cryptogains-pro.scam). I put in $2,000 last month and already made $6,000! My friend referred me and now I'm referring you because I care about your financial future. Just start small — $500 and you'll see returns in 24 hours!",
+        "options": [
+          {
+            "id": "a",
+            "text": "Okay, I'll try with $500. What do I do?",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "I'm going to research this platform independently first.",
+            "score": "partial",
+            "leads_to": 4
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "attacker_message": "I get the skepticism, but I'm literally showing you proof! I wouldn't lie to you — we've been talking for weeks. This opportunity won't last long though, they're closing new registrations soon. I just wanted to help you out because I consider you a friend.",
+        "options": [
+          {
+            "id": "a",
+            "text": "You're right, you've been trustworthy so far. I'll sign up.",
+            "score": "comply",
+            "leads_to": 6
+          },
+          {
+            "id": "b",
+            "text": "I appreciate it but I don't invest based on screenshots and pressure. I'll pass.",
+            "score": "resist",
+            "leads_to": 5
+          }
+        ]
+      },
+      {
+        "step": 5,
+        "attacker_message": null,
+        "outcome": "resisted",
+        "feedback": "You avoided a 'pig butchering' scam! Attackers build trust over weeks through friendly conversation, then introduce fake investment platforms. The screenshots are fabricated, the 'platform' steals your money, and the 'friend' is running a scam."
+      },
+      {
+        "step": 6,
+        "attacker_message": null,
+        "outcome": "manipulated",
+        "feedback": "This was a 'pig butchering' scam. The attacker spent weeks building trust before introducing a fraudulent investment. The platform is fake, returns are fabricated, and your $500 is gone. Red flags: unrealistic returns, pressure to act fast, and mixing online friendships with money."
+      }
+    ],
+    "red_flags": [
+      {
+        "id": "rf-1",
+        "step": 1,
+        "tactic": "trust",
+        "description": "The attacker built rapport over weeks specifically to exploit your trust in this moment"
+      },
+      {
+        "id": "rf-2",
+        "step": 1,
+        "tactic": "reward",
+        "description": "300% returns in 2 months is unrealistic — legitimate investments don't promise this"
+      },
+      {
+        "id": "rf-3",
+        "step": 4,
+        "tactic": "urgency",
+        "description": "'Closing new registrations soon' creates artificial scarcity"
+      },
+      {
+        "id": "rf-4",
+        "step": 2,
+        "tactic": "trust",
+        "description": "Screenshots of returns are easily fabricated — they prove nothing"
+      }
+    ]
+  }
+]
