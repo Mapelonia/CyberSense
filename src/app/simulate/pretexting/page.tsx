@@ -67,6 +67,7 @@ export default function PretextingSimulationPage() {
 
   useEffect(() => {
     fetchScenario()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -343,9 +344,21 @@ export default function PretextingSimulationPage() {
         )}
 
         {/* Feedback Panel */}
-        {showFeedback && feedbackData && (
+        {showFeedback && feedbackData && scenario && (
           <div className="mt-4 pb-6">
-            <FeedbackPanel data={feedbackData} />
+            <FeedbackPanel
+              feedback={feedbackData.feedback ?? feedbackData}
+              scenario={scenario}
+              scenarioType="pretexting"
+              onNext={() => {
+                setShowFeedback(false)
+                setFeedbackData(null)
+                setOutcome(null)
+                setMessages([])
+                fetchScenario()
+              }}
+              onDashboard={() => router.push('/dashboard')}
+            />
           </div>
         )}
       </main>
